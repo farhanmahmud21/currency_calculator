@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'result_screen.dart';
 
 void main() {
-  runApp(CurrencyCalculator());
+  runApp(
+    MaterialApp(home: CurrencyCalculator(), debugShowCheckedModeBanner: false),
+  );
 }
 
 class CurrencyCalculator extends StatefulWidget {
@@ -12,15 +15,15 @@ class CurrencyCalculator extends StatefulWidget {
 }
 
 class _CurrencyCalculatorState extends State<CurrencyCalculator> {
+  final TextEditingController currencyController = TextEditingController();
+  double result = 0;
+
   @override
   Widget build(BuildContext context) {
     OutlineInputBorder border = OutlineInputBorder(
       borderSide: BorderSide(color: Colors.black, width: 2),
       borderRadius: BorderRadius.circular(10),
     );
-
-    TextEditingController currencyController = TextEditingController();
-    var result = 0;
 
     return MaterialApp(
       title: 'Currency Calculator',
@@ -35,7 +38,9 @@ class _CurrencyCalculatorState extends State<CurrencyCalculator> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                currencyController.text.toString(),
+                currencyController.text.isEmpty
+                    ? "0"
+                    : "\$ ${currencyController.text}",
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 28,
@@ -48,7 +53,9 @@ class _CurrencyCalculatorState extends State<CurrencyCalculator> {
 
                 child: TextField(
                   controller: currencyController,
-
+                  onChanged: (value) {
+                    setState(() {});
+                  },
                   keyboardType: TextInputType.numberWithOptions(
                     decimal: true,
                     signed: true,
@@ -73,7 +80,15 @@ class _CurrencyCalculatorState extends State<CurrencyCalculator> {
               SizedBox(height: 5),
               TextButton(
                 onPressed: () {
-                  print(currencyController.text);
+                  setState(() {
+                    result = double.parse(currencyController.text) * 122.37;
+                  });
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ResultScreen(result: result),
+                    ),
+                  );
                 },
                 child: Text(
                   'Convert',
